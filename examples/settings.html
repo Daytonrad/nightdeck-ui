@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nightdeck-ui - settings panel that remembers</title>
+<link rel="stylesheet" href="../dist/nightdeck.css">
+<style>
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; background: #0c0f12; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="../dist/nightdeck.js"></script>
+<script>
+  // A settings panel that saves to localStorage and restores on reload.
+  // The accent colour setting re-themes the panel live through a CSS variable.
+  const KEY = "nightdeck-ui-settings-example";
+  const accents = { cyan: "#4fc3d9", violet: "#b07cf0", orange: "#f0994a", pink: "#f06fa8" };
+
+  const panel = Nightdeck.create("#app", {
+    title: "Settings",
+    version: "saved in this browser",
+    tabs: {
+      general: [
+        { type: "text", id: "nickname", label: "nickname", placeholder: "player one" },
+        { type: "select", id: "language", label: "language", options: [{ value: "en", label: "English" }, { value: "de", label: "Deutsch" }, { value: "ar", label: "العربية" }], value: "en" },
+        { type: "toggle", id: "autostart", label: "start with the system" },
+        { type: "toggle", id: "updates", label: "check for updates", value: true }
+      ],
+      appearance: [
+        { type: "select", id: "accent", label: "accent colour", options: Object.keys(accents), value: "cyan" },
+        { type: "slider", id: "scale", label: "text size", value: 100, min: 80, max: 130, step: 5, unit: "%" },
+        { type: "toggle", id: "console", label: "show console", value: true }
+      ],
+      privacy: [
+        { type: "toggle", id: "telemetry", label: "send usage data" },
+        { type: "toggle", id: "history", label: "keep history", value: true },
+        { type: "button", id: "clear", label: "clear saved settings", variant: "danger" }
+      ]
+    },
+    presets: { minimal: { console: false, updates: false, telemetry: false, history: false } },
+    onChange: (id, value, all) => { save(all); apply(all); },
+    onAction(id) {
+      if (id === "clear") { localStorage.removeItem(KEY); panel.reset(); panel.log("saved settings cleared"); }
+    }
+  });
+  panel.on("reset", save).on("preset", (name, all) => save(all));
+
+  function save(all) { try { localStorage.setItem(KEY, JSON.stringify(all)); } catch (e) {} }
+  function apply(all) {
+    panel.el.style.setProperty("--nd-accent", accents[all.accent] || accents.cyan);
+    panel.el.style.fontSize = all.scale + "%";
+    const con = panel.el.querySelector(".nd-console");
+    if (con) con.hidden = !all.console;
+  }
+
+  // restore what was saved last time, without firing change events
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+    for (const id in saved) if (panel.get(id) !== undefined) panel.set(id, saved[id], { silent: true });
+  } catch (e) {}
+  apply(panel.values());
+</script>
+</body>
+</html>

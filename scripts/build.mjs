@@ -3,7 +3,7 @@
 // - dist/nightdeck.min.js   the same, minified (for CDNs)
 // - dist/nightdeck.mjs      ES module: import Nightdeck from "nightdeck-ui"
 // - dist/nightdeck.css / dist/nightdeck.min.css
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync } from "node:fs";
 import { transform } from "esbuild";
 
 const root = new URL("..", import.meta.url);
@@ -39,4 +39,7 @@ write("dist/nightdeck.mjs", esm);
 write("dist/nightdeck.css", css);
 write("dist/nightdeck.min.js", (await transform(umd, { minify: true, legalComments: "none", target: "es2017" })).code.replace(/^/, banner));
 write("dist/nightdeck.min.css", (await transform(css, { loader: "css", minify: true, legalComments: "none", target: ["chrome90", "firefox121", "safari16"] })).code.replace(/^/, banner));
-console.log(`built nightdeck-ui ${version} into dist/`);
+// the demo site (docs/, published with GitHub Pages) gets its own copy of the build
+mkdirSync(new URL("docs/lib/", root), { recursive: true });
+for (const f of ["nightdeck.min.js", "nightdeck.min.css"]) copyFileSync(new URL("dist/" + f, root), new URL("docs/lib/" + f, root));
+console.log(`built nightdeck-ui ${version} into dist/ (and docs/lib/)`);

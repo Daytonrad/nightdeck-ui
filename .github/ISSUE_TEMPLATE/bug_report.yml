@@ -1,0 +1,28 @@
+name: Bug report
+description: Something does not work as described
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Smallest code that shows the problem
+      render: html
+  - type: input
+    id: version
+    attributes:
+      label: nightdeck-ui version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser or Electron version
+      placeholder: "Firefox 133, Chrome 131, Electron 33..."

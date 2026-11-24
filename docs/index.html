@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nightdeck-ui - dark control-panel UI kit</title>
+<meta name="description" content="A small dark control-panel UI kit in plain JavaScript and CSS: sidebar tabs, toggles, sliders, meters, buttons and a console pane. No dependencies.">
+<link rel="stylesheet" href="lib/nightdeck.min.css">
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: radial-gradient(900px 500px at 20% 0%, #1a2530, transparent 60%), radial-gradient(700px 500px at 100% 40%, #1d1a2a, transparent 60%), #0c0f12;
+    color: #d7dde2; font: 15px/1.6 "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; }
+  main { max-width: 1080px; margin: 0 auto; padding: 48px 20px 80px; }
+  h1 { font-weight: 300; letter-spacing: .06em; text-transform: uppercase; font-size: 40px; margin: 0; }
+  h2 { font-weight: 400; font-size: 22px; margin: 56px 0 12px; }
+  p.lead { color: #9aa5ae; font-size: 18px; margin: 8px 0 20px; max-width: 680px; }
+  a { color: #4fc3d9; }
+  .links { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 36px; }
+  .links a { text-decoration: none; padding: 7px 16px; border: 1px solid #2a3138; background: #15191d; font: 500 13px ui-monospace, Consolas, monospace; }
+  .links a:hover { border-color: #4fc3d9; }
+  pre { background: #11151a; border: 1px solid #2a3138; padding: 14px 16px; overflow: auto; font: 13px/1.55 ui-monospace, Consolas, monospace; color: #c9d1d7; }
+  .demo { display: flex; justify-content: center; }
+  .themes { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 18px; }
+  .themes button { font: 500 12px ui-monospace, Consolas, monospace; color: #d7dde2; background: #15191d; border: 1px solid #2a3138; padding: 6px 14px; cursor: pointer; }
+  .themes button[aria-pressed="true"] { border-color: currentColor; color: var(--c); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  td, th { border-bottom: 1px solid #2a3138; padding: 8px 10px; text-align: left; vertical-align: top; }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: .92em; color: #9bd64a; }
+  footer { margin-top: 64px; color: #7d8891; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>nightdeck-ui</h1>
+  <p class="lead">A dark control-panel UI kit for dashboards, settings screens and Electron apps. Plain JavaScript and CSS, about 6 KB gzipped, no dependencies.</p>
+  <div class="links">
+    <a href="https://github.com/mvhmuod/nightdeck-ui">GitHub</a>
+    <a href="https://www.npmjs.com/package/nightdeck-ui">npm</a>
+    <a href="#quick-start">Quick start</a>
+    <a href="https://github.com/mvhmuod/nightdeck-ui/tree/main/examples">Examples</a>
+  </div>
+
+  <h2>Try it</h2>
+  <p>Everything below is live: switch tabs (also with the arrow keys), move the sliders, press the presets. Every change is written to the console.</p>
+  <div class="themes" role="group" aria-label="Theme">
+    <button data-theme="default" style="--c:#4fc3d9" aria-pressed="true">default</button>
+    <button data-theme="violet" style="--c:#b07cf0">violet</button>
+    <button data-theme="amber" style="--c:#f0a94a">amber</button>
+    <button data-theme="mono" style="--c:#e0e0e0">mono</button>
+  </div>
+  <div class="demo"><div id="app"></div></div>
+
+  <h2 id="quick-start">Quick start</h2>
+  <pre>npm install nightdeck-ui</pre>
+  <p>or straight from a CDN, no install:</p>
+  <pre>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nightdeck-ui@0.1/dist/nightdeck.min.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/nightdeck-ui@0.1/dist/nightdeck.min.js"&gt;&lt;/script&gt;</pre>
+  <pre>&lt;div id="app"&gt;&lt;/div&gt;
+&lt;script&gt;
+  const panel = Nightdeck.create("#app", {
+    title: "Settings",
+    tabs: {
+      display: [
+        { type: "toggle", id: "vsync", label: "vertical sync", value: true },
+        { type: "slider", id: "brightness", label: "brightness", value: 60 }
+      ]
+    },
+    onChange(id, value, all) { console.log(id, value, all); }
+  });
+&lt;/script&gt;</pre>
+
+  <h2>Item types</h2>
+  <table>
+    <tr><th>type</th><th>what it is</th><th>value</th></tr>
+    <tr><td><code>toggle</code></td><td>on/off switch</td><td>true / false</td></tr>
+    <tr><td><code>slider</code></td><td>range with <code>min</code>, <code>max</code>, <code>step</code>, <code>unit</code></td><td>number</td></tr>
+    <tr><td><code>select</code></td><td>dropdown with <code>options</code></td><td>string</td></tr>
+    <tr><td><code>text</code></td><td>text field with <code>placeholder</code></td><td>string</td></tr>
+    <tr><td><code>button</code></td><td>fires an <code>action</code> event, <code>variant: "accent" | "danger"</code></td><td>-</td></tr>
+    <tr><td><code>meter</code></td><td>progress bar, turns warn colour above <code>warn</code> (50) and full colour at 100</td><td>0-100 (display)</td></tr>
+    <tr><td><code>info</code></td><td>label and value row</td><td>text (display)</td></tr>
+    <tr><td><code>custom</code></td><td>your own content: <code>render(element, panel)</code></td><td>-</td></tr>
+  </table>
+  <p>Full API, theming and browser support: see the <a href="https://github.com/mvhmuod/nightdeck-ui#readme">README</a>.</p>
+
+  <footer>nightdeck-ui · MIT License · © 2026 <a href="https://github.com/mvhmuod">mvhmuod</a></footer>
+</main>
+<script src="lib/nightdeck.min.js"></script>
+<script>
+  const panel = Nightdeck.create("#app", {
+    title: "Nightdeck",
+    version: "nightdeck-ui v" + Nightdeck.version,
+    tabs: {
+      display: [
+        { type: "toggle", id: "vsync", label: "vertical sync", value: true },
+        { type: "toggle", id: "hdr", label: "hdr output" },
+        { type: "toggle", id: "fps", label: "show fps counter", value: true },
+        { type: "toggle", id: "bloom", label: "bloom" },
+        { type: "slider", id: "brightness", label: "brightness", value: 60 },
+        { type: "slider", id: "fov", label: "field of view", value: 90, min: 60, max: 120, unit: "°" },
+        { type: "select", id: "quality", label: "quality", options: ["low", "medium", "high", "ultra"], value: "high" }
+      ],
+      system: [
+        { type: "meter", id: "cpu", label: "cpu usage" },
+        { type: "meter", id: "mem", label: "memory" },
+        { type: "meter", id: "gpu", label: "gpu temperature", warn: 70 },
+        { type: "meter", id: "disk", label: "disk", value: 100, text: "full" },
+        { type: "info", id: "uptime", label: "running for", value: "0 s" },
+        { type: "info", id: "items", label: "item types", value: "8" }
+      ],
+      account: [
+        { type: "text", id: "name", label: "display name", placeholder: "your name" },
+        { type: "select", id: "lang", label: "language", options: [{ value: "en", label: "English" }, { value: "de", label: "Deutsch" }] },
+        { type: "toggle", id: "news", label: "newsletter" },
+        { type: "button", id: "save", label: "save", variant: "accent" },
+        { type: "button", id: "logout", label: "sign out", variant: "danger" }
+      ]
+    },
+    presets: {
+      quality: { hdr: true, bloom: true, quality: "ultra", brightness: 70 },
+      performance: { hdr: false, bloom: false, vsync: false, quality: "low" }
+    },
+    onAction(id) { panel.log("button: " + id); }
+  });
+  const start = Date.now(); let cpu = 30;
+  setInterval(() => {
+    cpu = Math.min(100, Math.max(3, cpu + (Math.random() - .5) * 18));
+    panel.set("cpu", cpu).set("mem", 40 + cpu / 4).set("gpu", 45 + cpu / 2, { text: Math.round(45 + cpu / 2) + " °C" })
+      .set("uptime", Math.round((Date.now() - start) / 1000) + " s");
+  }, 1000);
+
+  const themes = {
+    default: {},
+    violet: { "--nd-accent": "#b07cf0", "--nd-on": "#f06fa8", "--nd-stripe": "linear-gradient(90deg,#6a5cd6,#b07cf0,#f06fa8)" },
+    amber: { "--nd-accent": "#f0a94a", "--nd-on": "#f0d64a", "--nd-stripe": "linear-gradient(90deg,#d6625c,#f0a94a,#f0d64a)", "--nd-panel": "#1a1714", "--nd-panel-2": "#221e1a" },
+    mono: { "--nd-accent": "#c8c8c8", "--nd-on": "#ffffff", "--nd-warn": "#9a9a9a", "--nd-full": "#ffffff", "--nd-stripe": "linear-gradient(90deg,#555,#ddd)" }
+  };
+  const vars = ["--nd-accent", "--nd-on", "--nd-warn", "--nd-full", "--nd-stripe", "--nd-panel", "--nd-panel-2"];
+  document.querySelectorAll("[data-theme]").forEach(b => b.addEventListener("click", () => {
+    vars.forEach(v => panel.el.style.removeProperty(v));
+    const t = themes[b.dataset.theme];
+    for (const k in t) panel.el.style.setProperty(k, t[k]);
+    document.querySelectorAll("[data-theme]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    panel.log("theme: " + b.dataset.theme);
+  }));
+</script>
+</body>
+</html>

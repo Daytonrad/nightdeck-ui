@@ -1,0 +1,10 @@
+{
+  "name": "nightdeck-ui-electron-starter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A minimal Electron app with a nightdeck-ui panel",
+  "main": "main.js",
+  "scripts": { "start": "electron ." },
+  "dependencies": { "nightdeck-ui": "^0.1.0" },
+  "devDependencies": { "electron": "^33.0.0" }
+}

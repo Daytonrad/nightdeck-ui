@@ -47,12 +47,12 @@
 .nd-console { flex: 0 1 var(--nd-console-width); min-width: 240px; display: flex; flex-direction: column; height: var(--nd-height); }
 
 .nd-body { display: flex; gap: var(--nd-gap); padding: 26px 20px 12px; flex: 1; min-height: 0; }
-.nd-side { width: 180px; flex: none; }
+.nd-side { width: 210px; flex: none; }
 .nd-title, .nd-ctitle {
   font-family: var(--nd-font-title); font-weight: 300; letter-spacing: .06em; text-transform: uppercase;
   line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.nd-title { font-size: 34px; margin: 0 0 26px; }
+.nd-title { font-size: 30px; margin: 0 0 26px; }
 .nd-ctitle { font-size: 26px; margin: 0 0 14px; }
 
 /* tabs: plain text, glow on hover and when selected */

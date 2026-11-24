@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nightdeck-ui - system monitor dashboard</title>
+<link rel="stylesheet" href="../dist/nightdeck.css">
+<style>
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; background: #0c0f12; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="../dist/nightdeck.js"></script>
+<script>
+  // A system-monitor style dashboard. The numbers are simulated here;
+  // in a real app you would read them from your backend or from Electron.
+  const panel = Nightdeck.create("#app", {
+    title: "Monitor",
+    version: "updates every second",
+    reset: false,
+    tabs: {
+      overview: [
+        { type: "meter", id: "cpu", label: "cpu usage" },
+        { type: "meter", id: "mem", label: "memory" },
+        { type: "meter", id: "gpu", label: "gpu usage" },
+        { type: "meter", id: "temp", label: "gpu temperature", warn: 70 },
+        { type: "meter", id: "disk", label: "disk c:", value: 58, text: "270 GB of 465 GB" },
+        { type: "meter", id: "net", label: "download" },
+        { type: "info", id: "uptime", label: "running for" },
+        { type: "info", id: "top", label: "busiest process" }
+      ],
+      alerts: [
+        { type: "slider", id: "cpuLimit", label: "warn above cpu", value: 85, unit: "%" },
+        { type: "toggle", id: "sound", label: "play a sound", value: true },
+        { type: "button", id: "test", label: "test alert" }
+      ]
+    },
+    onAction(id) { if (id === "test") panel.log("alert: this is a test"); }
+  });
+
+  const procs = ["browser", "editor", "game", "music", "backup"];
+  let t = 0, cpu = 20, mem = 45;
+  setInterval(() => {
+    t++;
+    cpu = Math.min(100, Math.max(2, cpu + (Math.random() - 0.5) * 20));
+    mem = Math.min(95, Math.max(30, mem + (Math.random() - 0.5) * 4));
+    const temp = 40 + cpu * 0.4, down = Math.random() * 100;
+    panel.set("cpu", cpu)
+      .set("mem", mem, { text: (mem * 0.16).toFixed(1) + " / 16 GB" })
+      .set("gpu", cpu * 0.7)
+      .set("temp", temp, { text: Math.round(temp) + " °C" })
+      .set("net", down, { text: Math.round(down * 120) + " KB/s" })
+      .set("uptime", Math.floor(t / 60) + "m " + (t % 60) + "s")
+      .set("top", procs[Math.floor(Math.random() * procs.length)]);
+    if (cpu > panel.get("cpuLimit")) panel.log("cpu above " + panel.get("cpuLimit") + "%: " + Math.round(cpu) + "%");
+  }, 1000);
+</script>
+</body>
+</html>
