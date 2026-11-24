@@ -1,15 +1,12 @@
-/*!
- * nightdeck-ui - dark control-panel UI kit
- * (c) 2026 mvhmuod - MIT License
+/*
+ * nightdeck-ui core. The build (scripts/build.mjs) wraps this file into
+ * dist/nightdeck.js (browser global + CommonJS + AMD) and dist/nightdeck.mjs (ES module).
+ * Edit this file, then run: npm run build
  */
-(function (root, factory) {
-  if (typeof module === "object" && module.exports) module.exports = factory();
-  else if (typeof define === "function" && define.amd) define([], factory);
-  else root.Nightdeck = factory();
-})(typeof self !== "undefined" ? self : this, function () {
+function nightdeckFactory() {
   "use strict";
 
-  var VERSION = "0.1.0";
+  var VERSION = "__VERSION__";
   var INPUTS = { toggle: 1, slider: 1, select: 1, text: 1 }; // controls that hold a value
   var uid = 0;
 
@@ -274,4 +271,4 @@
   }
 
   return { create: create, version: VERSION, escape: esc };
-});
+}

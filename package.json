@@ -1,0 +1,31 @@
+{
+  "name": "nightdeck-ui",
+  "version": "0.1.0",
+  "description": "Dark control-panel UI kit: sidebar tabs, toggles, sliders, meters, buttons and a console pane. Plain JavaScript and CSS, no dependencies.",
+  "author": "mvhmuod",
+  "license": "MIT",
+  "homepage": "https://github.com/mvhmuod/nightdeck-ui#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/mvhmuod/nightdeck-ui.git" },
+  "bugs": { "url": "https://github.com/mvhmuod/nightdeck-ui/issues" },
+  "keywords": ["ui", "components", "dashboard", "control-panel", "settings", "dark-theme", "electron", "vanilla-js", "no-dependencies"],
+  "main": "dist/nightdeck.js",
+  "module": "dist/nightdeck.mjs",
+  "style": "dist/nightdeck.css",
+  "unpkg": "dist/nightdeck.min.js",
+  "jsdelivr": "dist/nightdeck.min.js",
+  "exports": {
+    ".": { "import": "./dist/nightdeck.mjs", "require": "./dist/nightdeck.js" },
+    "./css": "./dist/nightdeck.css",
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
+  "sideEffects": ["*.css"],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
